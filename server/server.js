@@ -98,14 +98,15 @@ app.patch('/todos/:id',(req,res)=>{
 
 //POST /users
 app.post('/users',(req,res)=>{
-  console.log(req.body);
-
   var body = _.pick(req.body,['email','password'])
   var user = new User(body);
 
-  user.save().then((user)=>{
-    res.send(user);
-  },(e)=>{
+  user.save().then(()=>{
+    return user.generateAuthToken();
+  }).then((token) => {
+    console.log(token,user);
+    res.header('x-auth',token).send(user);
+  }).catch((e)=>{
     res.status(400).send(e);
   });
 
@@ -114,6 +115,5 @@ app.post('/users',(req,res)=>{
 app.listen(port, ()=>{
   console.log(`Started on port ${port}`)
 });
-
 
 module.exports = {app};
