@@ -165,11 +165,6 @@ describe('DELETE /todos/:id',()=>{
 });
 
 describe('PATCH /todos/:id',()=>{
-  //grab id of first item
-  //update text, set completed true
-  //assert 200 response
-  //custom assert that text is changed, completed is true, completedAt.tobeanumber
-
   it('should update the todo',(done)=>{
     var hexId = todos[0]._id.toHexString();
     var text = 'this is new text';
@@ -183,6 +178,17 @@ describe('PATCH /todos/:id',()=>{
         expect(res.body.todo.text).toBe(text);
         expect(res.body.todo.completedAt).toBeA('number');
       })
+      .end(done);
+  });
+
+  it('should update the todo',(done)=>{
+    var hexId = todos[0]._id.toHexString();
+    var text = 'this is new text';
+    request(app)
+      .patch(`/todos/${hexId}`)
+      .set('x-auth',users[1].tokens[0].token)
+      .send({completed: true,text})
+      .expect(404)
       .end(done);
   });
 
